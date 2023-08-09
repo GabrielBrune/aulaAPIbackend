@@ -1,11 +1,11 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
-export class Marca{
+export class MARCA{
     @PrimaryColumn()
-    id: string;
+    ID: string;
 
     @Column()
-    nome: string;
+    NOME: string;
     
 }

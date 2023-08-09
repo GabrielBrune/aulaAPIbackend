@@ -1,23 +1,54 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
-import { Marca } from "./marca.entity";
+import { CriarMarcaDTO } from "./dto/marca.dto";
+import { MARCA } from "./marca.entity";
+import { v4 as uuid } from 'uuid';
+import { RetornoCadastroDTO } from "src/dto/retorno.dto";
+
 
 @Injectable()
 export class MarcaService{
     constructor(
         @Inject('MARCA_REPOSITORY')
-        private marcaRepository: Repository<Marca>
+        private marcaRepository: Repository<MARCA>
     ){}
 
-    async listar(): Promise<Marca[]> {
+    async Inserir(dados:CriarMarcaDTO): Promise<RetornoCadastroDTO>{
+        let marca = new MARCA();
+            marca.ID = uuid();
+            marca.NOME = dados.nome;
+
+        return this.marcaRepository.save(marca)
+        .then((result)=>{
+            return <RetornoCadastroDTO>{
+                id: marca.ID,
+                message:"Marca Cadastrada"
+            };
+        })
+        .catch((error) => {
+            return <RetornoCadastroDTO>{
+                id: "",
+                message: "Houve um erro ao cadastrar."
+            };
+        })
+
+    }
+    
+
+    async listar(): Promise<MARCA[]> {
         return this.marcaRepository.find();
     }
 
-    async listarID(id:string): Promise<Marca>{
-        return this.marcaRepository.findOne(id);
+    async listarID(ID:string): Promise<MARCA>{
+        return this.marcaRepository.findOne({
+            where:{
+                ID,
+            },
+        });
     }
 
-    async remover(): Promise<void>{
-        return this.marcaRepository.delete();
+    async remover(ID: string): Promise<void>{
+        const marca = await this.listarID(ID);
+        await this.marcaRepository.delete(marca);
     }
 }

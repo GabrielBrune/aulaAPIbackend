@@ -10,7 +10,7 @@ export const databaseProviders = [
                 port:3306,
                 username:'root',
                 password:'',
-                database:'projetoapi',
+                database:'bancoaula',
                 entities:[
                     __dirname+ '/../**/*.entity{.ts,.js}',
                 ],
